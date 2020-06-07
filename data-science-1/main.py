@@ -28,7 +28,7 @@ from statsmodels.distributions.empirical_distribution import ECDF
 # In[2]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+#%matplotlib inline
 
 from IPython.core.pylabtools import figsize
 
@@ -51,21 +51,40 @@ dataframe = pd.DataFrame({"normal": sct.norm.rvs(20, 4, size=10000),
                      "binomial": sct.binom.rvs(100, 0.2, size=10000)})
 
 
+# In[4]:
+
+
+#Get Help of function used
+#sct.norm.rvs?
+
+
 # ## Inicie sua análise a partir da parte 1 a partir daqui
 
-# In[4]:
+# In[5]:
 
 
 # Sua análise da parte 1 começa aqui.
 dataframe.describe()
 
 
-# In[5]:
+# In[6]:
 
 
 print(dataframe.normal.quantile(q=0.25))
 print(dataframe.normal.quantile(q=0.50))
 print(dataframe.normal.quantile(q=0.75))
+print("-----")
+print(dataframe.binomial.quantile(q=0.25))
+print(dataframe.binomial.quantile(q=0.50))
+print(dataframe.binomial.quantile(q=0.75))
+
+
+# In[9]:
+
+
+#Plot 
+sns.distplot(dataframe.normal);
+sns.distplot(dataframe.binomial);
 
 
 # ## Questão 1
@@ -74,7 +93,7 @@ print(dataframe.normal.quantile(q=0.75))
 # 
 # Em outra palavras, sejam `q1_norm`, `q2_norm` e `q3_norm` os quantis da variável `normal` e `q1_binom`, `q2_binom` e `q3_binom` os quantis da variável `binom`, qual a diferença `(q1_norm - q1 binom, q2_norm - q2_binom, q3_norm - q3_binom)`?
 
-# In[6]:
+# In[10]:
 
 
 def q1():
@@ -89,7 +108,7 @@ def q1():
     pass
 
 
-# In[7]:
+# In[11]:
 
 
 print(q1())
@@ -106,12 +125,30 @@ type(q1())
 # 
 # Considere o intervalo $[\bar{x} - s, \bar{x} + s]$, onde $\bar{x}$ é a média amostral e $s$ é o desvio padrão. Qual a probabilidade nesse intervalo, calculada pela função de distribuição acumulada empírica (CDF empírica) da variável `normal`? Responda como uma único escalar arredondado para três casas decimais.
 
-# In[6]:
+# In[20]:
 
 
 def q2():
     # Retorne aqui o resultado da questão 2.
+    return np.float(sct.norm.cdf(dataframe.normal.mean() - dataframe.normal.std(), loc=10, scale=3))
     pass
+
+
+# In[22]:
+
+
+print((dataframe.mean() - dataframe.std()))
+print('----')
+print((dataframe.mean() + dataframe.std()))
+
+sct.norm.cdf(dataframe.normal.mean() - dataframe.normal.std(), loc=10, scale=3)
+
+
+# In[21]:
+
+
+print(q2())
+type(q2())
 
 
 # Para refletir:
@@ -119,17 +156,32 @@ def q2():
 # * Esse valor se aproxima do esperado teórico?
 # * Experimente também para os intervalos $[\bar{x} - 2s, \bar{x} + 2s]$ e $[\bar{x} - 3s, \bar{x} + 3s]$.
 
+# Considerando os dados apresentados na matéria da semana o valor de 97% é muito alto.
+# 
+# ![normal](https://cdn-images-1.medium.com/max/1600/1*IZ2II2HYKeoMrdLU5jW6Dw.png)
+# 
+# 5. A distribuição normal tem essas probabilidades conhecidas:
+#   * A probabilidade de $X$ assumir valores entre $\mu - \sigma$ e $\mu + \sigma$ é de 68.27%.
+#   * A probabilidade de $X$ assumir valores entre $\mu - 2\sigma$ e $\mu + 2\sigma$ é de 95.45%.
+#   * A probabilidade de $X$ assumir valores entre $\mu - 3\sigma$ e $\mu + 3\sigma$ é de 99.73%.
+#   
+# 6. Isso ilustra um outro ponto: a maior parte dos valores que $X$ assume numa distribuição normal se concentra em torno da média, e vai ficando cada vez mais difícil de assumir valores no sentido das caudas.
+
 # ## Questão 3
 # 
 # Qual é a diferença entre as médias e as variâncias das variáveis `binomial` e `normal`? Responda como uma tupla de dois elementos arredondados para três casas decimais.
 # 
 # Em outras palavras, sejam `m_binom` e `v_binom` a média e a variância da variável `binomial`, e `m_norm` e `v_norm` a média e a variância da variável `normal`. Quais as diferenças `(m_binom - m_norm, v_binom - v_norm)`?
 
-# In[7]:
+# In[49]:
 
 
 def q3():
     # Retorne aqui o resultado da questão 3.
+    mean_dif = round(dataframe.binomial.mean() - dataframe.normal.mean(),3)
+    var_dif = round(dataframe.binomial.var() - dataframe.normal.var(),3)
+    result = (mean_dif,var_dif)
+    return result
     pass
 
 
@@ -138,11 +190,28 @@ def q3():
 # * Você esperava valore dessa magnitude?
 # * Qual o efeito de aumentar ou diminuir $n$ (atualmente 100) na distribuição da variável `binomial`?
 
+# In[50]:
+
+
+print(dataframe.normal.mean())
+print(dataframe.binomial.mean())
+print('---')
+print(dataframe.normal.var())
+print(dataframe.binomial.var())
+
+
+# In[51]:
+
+
+print(q3())
+type(q3())
+
+
 # ## Parte 2
 
 # ### _Setup_ da parte 2
 
-# In[8]:
+# In[65]:
 
 
 stars = pd.read_csv("pulsar_stars.csv")
@@ -159,10 +228,17 @@ stars.loc[:, "target"] = stars.target.astype(bool)
 
 # ## Inicie sua análise da parte 2 a partir daqui
 
-# In[9]:
+# In[66]:
 
 
 # Sua análise da parte 2 começa aqui.
+stars.plot.box()
+
+
+# In[76]:
+
+
+sct.norm.ppf(stars[stars['target'] == True].mean_profile)
 
 
 # ## Questão 4
@@ -178,12 +254,20 @@ stars.loc[:, "target"] = stars.target.astype(bool)
 # 
 # Quais as probabilidade associadas a esses quantis utilizando a CDF empírica da variável `false_pulsar_mean_profile_standardized`? Responda como uma tupla de três elementos arredondados para três casas decimais.
 
-# In[10]:
+# In[56]:
 
 
 def q4():
     # Retorne aqui o resultado da questão 4.
+    return (1,2,3)
     pass
+
+
+# In[58]:
+
+
+print(q4())
+type(q4())
 
 
 # Para refletir:
@@ -195,12 +279,20 @@ def q4():
 # 
 # Qual a diferença entre os quantis Q1, Q2 e Q3 de `false_pulsar_mean_profile_standardized` e os mesmos quantis teóricos de uma distribuição normal de média 0 e variância 1? Responda como uma tupla de três elementos arredondados para três casas decimais.
 
-# In[11]:
+# In[62]:
 
 
 def q5():
     # Retorne aqui o resultado da questão 5.
+    return (0.001,0.002,0.003)
     pass
+
+
+# In[63]:
+
+
+print(q5())
+type(q5())
 
 
 # Para refletir:
