@@ -14,7 +14,7 @@
 
 # ## _Setup_ geral
 
-# In[1]:
+# In[211]:
 
 
 import pandas as pd
@@ -25,7 +25,7 @@ import seaborn as sns
 from statsmodels.distributions.empirical_distribution import ECDF
 
 
-# In[2]:
+# In[212]:
 
 
 #%matplotlib inline
@@ -42,7 +42,7 @@ sns.set()
 
 # ### _Setup_ da parte 1
 
-# In[3]:
+# In[213]:
 
 
 np.random.seed(42)
@@ -60,14 +60,14 @@ dataframe = pd.DataFrame({"normal": sct.norm.rvs(20, 4, size=10000),
 
 # ## Inicie sua análise a partir da parte 1 a partir daqui
 
-# In[5]:
+# In[214]:
 
 
 # Sua análise da parte 1 começa aqui.
 dataframe.describe()
 
 
-# In[6]:
+# In[215]:
 
 
 print(dataframe.normal.quantile(q=0.25))
@@ -79,7 +79,7 @@ print(dataframe.binomial.quantile(q=0.50))
 print(dataframe.binomial.quantile(q=0.75))
 
 
-# In[9]:
+# In[216]:
 
 
 #Plot 
@@ -93,7 +93,7 @@ sns.distplot(dataframe.binomial);
 # 
 # Em outra palavras, sejam `q1_norm`, `q2_norm` e `q3_norm` os quantis da variável `normal` e `q1_binom`, `q2_binom` e `q3_binom` os quantis da variável `binom`, qual a diferença `(q1_norm - q1 binom, q2_norm - q2_binom, q3_norm - q3_binom)`?
 
-# In[10]:
+# In[217]:
 
 
 def q1():
@@ -108,7 +108,7 @@ def q1():
     pass
 
 
-# In[11]:
+# In[218]:
 
 
 print(q1())
@@ -125,26 +125,40 @@ type(q1())
 # 
 # Considere o intervalo $[\bar{x} - s, \bar{x} + s]$, onde $\bar{x}$ é a média amostral e $s$ é o desvio padrão. Qual a probabilidade nesse intervalo, calculada pela função de distribuição acumulada empírica (CDF empírica) da variável `normal`? Responda como uma único escalar arredondado para três casas decimais.
 
-# In[20]:
+# In[219]:
 
 
 def q2():
     # Retorne aqui o resultado da questão 2.
-    return np.float(sct.norm.cdf(dataframe.normal.mean() - dataframe.normal.std(), loc=10, scale=3))
+    fit_norm  = ECDF(dataframe.normal)
+    return np.float(round(fit_norm(dataframe.normal.mean() + dataframe.normal.std()) - fit_norm(dataframe.normal.mean() - dataframe.normal.std()),3))
     pass
 
 
-# In[22]:
+# In[220]:
 
 
-print((dataframe.mean() - dataframe.std()))
-print('----')
-print((dataframe.mean() + dataframe.std()))
-
-sct.norm.cdf(dataframe.normal.mean() - dataframe.normal.std(), loc=10, scale=3)
+f = lambda x: sct.norm.cdf(dataframe.normal, loc=dataframe.normal.mean(), scale=dataframe.normal.std())
+cdf = f(dataframe.normal)
+sns.lineplot(dataframe.normal, cdf);
 
 
-# In[21]:
+# In[228]:
+
+
+#Return the Empirical CDF of an array as a step function.
+fit_norm  = ECDF(dataframe.normal)
+
+#Retorno da probabilidade nos intervalos demonstrados em aula
+#  [𝑥¯−𝑠,𝑥¯+𝑠]
+print(round(fit_norm(dataframe.normal.mean() + dataframe.normal.std()) - fit_norm(dataframe.normal.mean() - dataframe.normal.std()),3))
+#  [𝑥¯−2𝑠,𝑥¯+2𝑠]
+print(round(fit_norm(dataframe.normal.mean() + dataframe.normal.std()*2) - fit_norm(dataframe.normal.mean() - dataframe.normal.std()*2),3))
+#  [𝑥¯−3𝑠,𝑥¯+3𝑠]
+print(round(fit_norm(dataframe.normal.mean() + dataframe.normal.std()*3) - fit_norm(dataframe.normal.mean() - dataframe.normal.std()*3),3))
+
+
+# In[229]:
 
 
 print(q2())
@@ -153,10 +167,10 @@ type(q2())
 
 # Para refletir:
 # 
-# * Esse valor se aproxima do esperado teórico?
+# * Esse valor se aproxima do esperado teórico? R: Sim
 # * Experimente também para os intervalos $[\bar{x} - 2s, \bar{x} + 2s]$ e $[\bar{x} - 3s, \bar{x} + 3s]$.
 
-# Considerando os dados apresentados na matéria da semana o valor de 97% é muito alto.
+# Informações importantes apresentados na aula:
 # 
 # ![normal](https://cdn-images-1.medium.com/max/1600/1*IZ2II2HYKeoMrdLU5jW6Dw.png)
 # 
@@ -211,7 +225,7 @@ type(q3())
 
 # ### _Setup_ da parte 2
 
-# In[65]:
+# In[341]:
 
 
 stars = pd.read_csv("pulsar_stars.csv")
@@ -228,17 +242,11 @@ stars.loc[:, "target"] = stars.target.astype(bool)
 
 # ## Inicie sua análise da parte 2 a partir daqui
 
-# In[66]:
+# In[342]:
 
 
 # Sua análise da parte 2 começa aqui.
 stars.plot.box()
-
-
-# In[76]:
-
-
-sct.norm.ppf(stars[stars['target'] == True].mean_profile)
 
 
 # ## Questão 4
@@ -254,16 +262,30 @@ sct.norm.ppf(stars[stars['target'] == True].mean_profile)
 # 
 # Quais as probabilidade associadas a esses quantis utilizando a CDF empírica da variável `false_pulsar_mean_profile_standardized`? Responda como uma tupla de três elementos arredondados para três casas decimais.
 
-# In[56]:
+# In[343]:
+
+
+df_estrela_nao_pulsar = stars[stars['target'] == 0].mean_profile
+
+#Normalizacao dos valores fuiltrados
+false_pulsar_mean_profile_standardized = (df_estrela_nao_pulsar - df_estrela_nao_pulsar.mean())/ df_estrela_nao_pulsar.std()
+
+
+# In[344]:
 
 
 def q4():
     # Retorne aqui o resultado da questão 4.
-    return (1,2,3)
+    norm_ecdf = ECDF(false_pulsar_mean_profile_standardized)
+    
+    quantis = sct.norm.ppf([0.80,0.90,0.95], loc = 0 , scale = 1)
+    
+    return (norm_ecdf(quantis[0]).round(3),norm_ecdf(quantis[1]).round(3),norm_ecdf(quantis[2]).round(3))   
+    
     pass
 
 
-# In[58]:
+# In[345]:
 
 
 print(q4())
@@ -279,16 +301,23 @@ type(q4())
 # 
 # Qual a diferença entre os quantis Q1, Q2 e Q3 de `false_pulsar_mean_profile_standardized` e os mesmos quantis teóricos de uma distribuição normal de média 0 e variância 1? Responda como uma tupla de três elementos arredondados para três casas decimais.
 
-# In[62]:
+# In[346]:
 
 
 def q5():
     # Retorne aqui o resultado da questão 5.
-    return (0.001,0.002,0.003)
+    norm_ecdf = ECDF(false_pulsar_mean_profile_standardized)
+    quantis = sct.norm.ppf([0.25,0.50,0.75], loc = 0 , scale = 1)
+    
+    q1_diff = false_pulsar_mean_profile_standardized.quantile(0.25) - quantis[0]
+    q2_diff = false_pulsar_mean_profile_standardized.quantile(0.50) - quantis[1]
+    q3_diff = false_pulsar_mean_profile_standardized.quantile(0.75) - quantis[2]    
+    
+    return (q1_diff.round(3), q2_diff.round(3), q3_diff.round(3))
     pass
 
 
-# In[63]:
+# In[347]:
 
 
 print(q5())
