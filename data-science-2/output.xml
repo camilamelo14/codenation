@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuite errors="0" failures="1" name="pytest" skipped="0" tests="7" time="7.019"><testcase classname="test_submit" file="test_submit.py" line="3" name="test_q1" time="0.005"><system-out>(&apos;Retorno: &apos;, (0.9961519837379456, 5.681722541339695e-07))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="8" name="test_q2" time="0.005"><system-out>(&apos;Retorno: &apos;, (13.033635135942651, 0.001478366424594868))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="13" name="test_q3" time="0.004"><system-out>(&apos;Retorno: &apos;, NormaltestResult(statistic=510.24655809881176, pvalue=1.5898922918029537e-111))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="18" name="test_q4" time="0.007"><system-out>(&apos;Retorno: &apos;, NormaltestResult(statistic=45.91534331977353, pvalue=1.0705572101256944e-10))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="23" name="test_q5" time="0.006"><system-out>(&apos;Retorno: &apos;, Ttest_indResult(statistic=-3.2197616412698205, pvalue=0.0013229277795920673))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="28" name="test_q6" time="0.009"><failure message="assert False == True
+  -False
+  +True">E   assert False == True
+      -False
+      +True</failure><system-out>(&apos;Retorno: &apos;, Ttest_indResult(statistic=0.6396212192621117, pvalue=0.5226033826111448))
+</system-out></testcase><testcase classname="test_submit" file="test_submit.py" line="33" name="test_q7" time="0.005"></testcase></testsuite>
