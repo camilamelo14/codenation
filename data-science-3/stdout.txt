@@ -1,0 +1,13 @@
+============================= test session starts =============================
+platform win32 -- Python 2.7.16, pytest-4.3.1, py-1.8.0, pluggy-0.9.0 -- C:\ProgramData\Anaconda2\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\clmo\codenation\data-science-3, inifile:
+collecting ... collected 4 items
+
+test_submit.py::test_q1 PASSED                                           [ 25%]
+test_submit.py::test_q2 PASSED                                           [ 50%]
+test_submit.py::test_q3 PASSED                                           [ 75%]
+test_submit.py::test_q4 PASSED                                           [100%]
+
+--- generated xml file: C:\Users\clmo\codenation\data-science-3\output.xml ----
+========================== 4 passed in 10.78 seconds ==========================
